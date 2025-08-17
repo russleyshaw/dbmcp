@@ -3,6 +3,8 @@ name: Build and Release
 on:
   push:
     branches: [main]
+    tags:
+      - 'v*'
   pull_request:
     branches: [main]
   release:
@@ -46,6 +48,40 @@ jobs:
           name: dbmcp-${{ matrix.target }}
           path: dbmcp-${{ matrix.target }}${{ matrix.extension }}
           retention-days: 90
+
+  create-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            Release ${{ github.ref_name }}
+            
+            ## Downloads
+            - Linux: dbmcp-linux-x64
+            - Windows: dbmcp-windows-x64.exe
+            - macOS: dbmcp-darwin-x64
+          files: |
+            ./artifacts/dbmcp-linux-x64/dbmcp-linux-x64
+            ./artifacts/dbmcp-windows-x64/dbmcp-windows-x64.exe
+            ./artifacts/dbmcp-darwin-x64/dbmcp-darwin-x64
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-release-assets:
     if: github.event_name == 'release'
