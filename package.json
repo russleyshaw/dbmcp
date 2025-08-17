@@ -1,5 +1,6 @@
 {
   "name": "@russley/dbmcp",
+  "description": "A Model Context Protocol (MCP) server for database connectivity and schema introspection.",
   "module": "index.ts",
   "type": "module",
   "version": "1.0.0",

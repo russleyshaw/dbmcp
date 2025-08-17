@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -46,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dbmcp-${{ matrix.target }}
-          path: dbmcp-${{ matrix.target }}${{ matrix.extension }}
+          path: dist/dbmcp-${{ matrix.target }}${{ matrix.extension }}
           retention-days: 90
 
   create-release:
@@ -78,7 +81,7 @@ jobs:
             ./artifacts/dbmcp-linux-x64/dbmcp-linux-x64
             ./artifacts/dbmcp-windows-x64/dbmcp-windows-x64.exe
             ./artifacts/dbmcp-darwin-x64/dbmcp-darwin-x64
-          draft: false
+          draft: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
