@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "dbmcp": {
+      "command": "bun",
+      "args": ["run", "src/main.ts"],
+      "cwd": "."
+    }
+  }
+}

@@ -1,0 +1,68 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            target: linux-x64
+            extension: ""
+          - os: windows-latest
+            target: windows-x64
+            extension: ".exe"
+          - os: macos-latest
+            target: darwin-x64
+            extension: ""
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build executable
+        run: bun build src/main.ts --compile --outfile dist/dbmcp-${{ matrix.target }}${{ matrix.extension }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbmcp-${{ matrix.target }}
+          path: dbmcp-${{ matrix.target }}${{ matrix.extension }}
+          retention-days: 90
+
+  create-release-assets:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./artifacts/dbmcp-linux-x64/dbmcp-linux-x64
+            ./artifacts/dbmcp-windows-x64/dbmcp-windows-x64.exe
+            ./artifacts/dbmcp-darwin-x64/dbmcp-darwin-x64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

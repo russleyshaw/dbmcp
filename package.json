@@ -1,0 +1,45 @@
+{
+  "name": "@russley/dbmcp",
+  "module": "index.ts",
+  "type": "module",
+  "version": "1.0.0",
+  "files": [
+    "package.json",
+    "dist/"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "json-schema-to-zod": "^2.6.1",
+    "lru-cache": "^11.1.0",
+    "mysql2": "^3.14.3",
+    "pg": "^8.16.3",
+    "uuid": "^11.1.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "@types/bun": "latest",
+    "@types/pg": "^8.15.5",
+    "@types/uuid": "^10.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "bin": {
+    "dbmcp": "./dist/cli.js"
+  },
+  "scripts": {
+    "start": "bun run src/main.ts",
+    "lint": "biome check src/ --write",
+    "compile": "bun run compile:cli &&  bun run compile:linux && bun run compile:windows && bun run compile:macos-x64 && bun run compile:macos-arm",
+    "compile:cli": "bun build src/cli.ts --target node --outfile dist/cli.js",
+    "compile:linux": "bun build src/main.ts --compile --target bun-linux-x64 --outfile dist/dbmcp-linux-x64",
+    "compile:windows": "bun build src/main.ts --compile --target bun-windows-x64 --outfile dist/dbmcp-windows-x64.exe",
+    "compile:macos-x64": "bun build src/main.ts --compile --target bun-darwin-x64 --outfile dist/dbmcp-darwin-x64",
+    "compile:macos-arm": "bun build src/main.ts --compile --target bun-darwin-arm64 --outfile dist/dbmcp-darwin-arm64",
+
+    "prepublishOnly": "rm -rf dist/ && bun run compile",
+
+    "mcp:inspect": "bunx @modelcontextprotocol/inspector bun start"
+  }
+}

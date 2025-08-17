@@ -1,0 +1,13 @@
+{
+    // VS Code MCP configuration
+    // Ensure you have the "Model Context Protocol" extension (or equivalent) installed.
+    // This runs your local db-mcp server via Bun using the TypeScript entrypoint.
+    "servers": {
+        "dbmcp": {
+            "command": "bun",
+            "args": ["start"],
+            "type": "stdio"
+
+        }
+    }
+}
