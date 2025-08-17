@@ -67,15 +67,15 @@ Execute a SQL query against the connected database.
 
 ## Configuration with Claude Code
 
-### Using Pre-compiled Binary
-
 Add this to your MCP configuration:
 
 ```json
 {
   "mcpServers": {
-    "db-mcp": {
-      "command": "/path/to/dbmcp-linux-x64",
+    "dbmcp": {
+      "command": "npx",
+      "args": ["@russley/dbmcp"],
+      "cwd": "."
     }
   }
 }
