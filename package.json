@@ -3,7 +3,7 @@
   "description": "A Model Context Protocol (MCP) server for database connectivity and schema introspection.",
   "module": "index.ts",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "files": [
     "package.json",
     "dist/"
